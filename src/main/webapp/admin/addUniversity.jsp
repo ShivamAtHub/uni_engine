@@ -6,6 +6,9 @@
         response.sendRedirect("login.jsp");
         return;
     }
+
+    String success = request.getParameter("success");
+
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -77,6 +80,11 @@
 
         </div>
     </main>
-
+<% if ("true".equals(success)) { %>
+<script>
+    alert("✅ University added successfully!");
+    window.location.href = "dashboard.jsp";
+</script>
+<% } %>
 </body>
 </html>

@@ -26,7 +26,7 @@ public class AddUniversityServlet extends HttpServlet {
         boolean success = dao.addUniversity(university);
 
         if (success) {
-            response.sendRedirect("admin/dashboard.jsp");
+            response.sendRedirect("admin/addUniversity.jsp?success=true");
         } else {
             request.setAttribute("error", "Failed to add university.");
             request.getRequestDispatcher("admin/addUniversity.jsp").forward(request, response);
