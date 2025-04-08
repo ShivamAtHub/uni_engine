@@ -1,8 +1,15 @@
 import java.io.IOException;
-import javax.servlet.*;
-import javax.servlet.http.*;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.RequestDispatcher;
+
+@WebServlet("/sendMessage")
 public class MessageServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -17,6 +24,7 @@ public class MessageServlet extends HttpServlet {
 
         try {
             conn = DBConnection.getConnection();
+
             String sql = "INSERT INTO messages (name, email, subject, message) VALUES (?, ?, ?, ?)";
             ps = conn.prepareStatement(sql);
             ps.setString(1, name);
@@ -24,23 +32,23 @@ public class MessageServlet extends HttpServlet {
             ps.setString(3, subject);
             ps.setString(4, message);
 
-            int rowsInserted = ps.executeUpdate();
+            int rows = ps.executeUpdate();
 
-            if (rowsInserted > 0) {
-                request.setAttribute("msg", "Message sent successfully!");
+            if (rows > 0) {
+                request.setAttribute("msg", "✅ Message sent successfully!");
             } else {
-                request.setAttribute("msg", "Failed to send message. Please try again.");
+                request.setAttribute("msg", "❌ Failed to send message. Try again.");
             }
-            RequestDispatcher rd = request.getRequestDispatcher("user/messageForm.jsp");
-            rd.forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("msg", "Error occurred while sending message.");
-            request.getRequestDispatcher("user/messageForm.jsp").forward(request, response);
+            request.setAttribute("msg", "❌ Error occurred while sending message.");
         } finally {
             try { if (ps != null) ps.close(); } catch (Exception ignored) {}
             try { if (conn != null) conn.close(); } catch (Exception ignored) {}
         }
+
+        RequestDispatcher rd = request.getRequestDispatcher("user/messageForm.jsp");
+        rd.forward(request, response);
     }
 }
