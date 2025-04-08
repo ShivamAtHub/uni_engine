@@ -6,6 +6,9 @@
         response.sendRedirect("login.jsp");
         return;
     }
+
+    String success = request.getParameter("success");
+    String error = request.getParameter("error");
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -75,6 +78,15 @@
         </form>
     </div>
 </main>
-
+<% if ("true".equals(success)) { %>
+<script>
+    alert("✅ Course added successfully!");
+    window.location.href = "dashboard.jsp";
+</script>
+<% } else if ("true".equals(error)) { %>
+<script>
+    alert("❌ Failed to add course. Please try again.");
+</script>
+<% } %>
 </body>
 </html>

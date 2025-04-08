@@ -6,6 +6,8 @@
         response.sendRedirect("login.jsp");
         return;
     }
+
+    String status = request.getParameter("status");
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -37,8 +39,25 @@
     </a>
 </div>
 
+<!-- Alert Messages -->
+<% if ("success".equals(status)) { %>
+    <div class="max-w-xl mx-auto mt-6">
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+            <strong class="font-bold">Success!</strong>
+            <span class="block sm:inline">Faculty added successfully.</span>
+        </div>
+    </div>
+<% } else if ("error".equals(status)) { %>
+    <div class="max-w-xl mx-auto mt-6">
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <strong class="font-bold">Error!</strong>
+            <span class="block sm:inline">Something went wrong. Please try again.</span>
+        </div>
+    </div>
+<% } %>
+
 <!-- Form -->
-<main class="flex justify-center items-center mt-20">
+<main class="flex justify-center items-center mt-6">
     <div class="bg-white shadow-lg rounded-xl p-8 w-full max-w-xl">
         <h2 class="text-2xl font-semibold text-center text-gray-800 mb-6">Add New Faculty</h2>
 
@@ -56,8 +75,8 @@
             </div>
 
             <div>
-                <label for="department" class="block text-gray-700">Department</label>
-                <input type="text" name="department" id="department" required
+                <label for="designation" class="block text-gray-700">Designation</label>
+                <input type="text" name="designation" id="designation"
                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
 
@@ -68,9 +87,9 @@
             </div>
 
             <div>
-                <label for="contact" class="block text-gray-700">Contact Number</label>
-                <input type="text" name="contact" id="contact" required
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <label for="publications" class="block text-gray-700">Publications</label>
+                <textarea name="publications" id="publications" rows="4"
+                          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
             </div>
 
             <button type="submit"
@@ -78,6 +97,7 @@
                 Submit Faculty
             </button>
         </form>
+
     </div>
 </main>
 
