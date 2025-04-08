@@ -27,6 +27,7 @@ public class AdminLoginServlet extends HttpServlet {
         if (isValid) {
             HttpSession session = request.getSession();
             session.setAttribute("adminUsername", username);
+            session.setAttribute("role", "admin");
 
             // IMPORTANT: This should redirect (change the URL)
             response.sendRedirect(request.getContextPath() + "/admin/dashboard.jsp");
