@@ -1,26 +1,45 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="java.util.List" %>
+<%@ page import="model.Faculty" %>
+<%@ page import="dao.FacultyDAO" %>
 <%@ include file="../common/header.jsp" %>
 <%@ include file="../common/navbar.jsp" %>
+
+<%
+    Integer userId = (Integer) session.getAttribute("userId");
+    if (userId == null) {
+        response.sendRedirect("login.jsp");
+        return;
+    }
+
+    FacultyDAO facultyDAO = new FacultyDAO();
+    List<Faculty> facultyList = facultyDAO.getAllFaculties();
+%>
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>Send Message</title>
     <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <div class="container mt-5">
     <div class="card shadow p-4">
-        <h3 class="text-center mb-4">Send a Message to Admin</h3>
-        <form action="../../MessageServlet" method="post">
-            <div class="form-group mb-3">
-                <label for="name">Your Name</label>
-                <input type="text" class="form-control" id="name" name="name" required>
-            </div>
+        <h3 class="text-center mb-4">Send a Message to Faculty</h3>
+        <form action="<%= request.getContextPath() %>/MessageServlet" method="post">
+            <input type="hidden" name="fromUserId" value="<%= userId %>">
 
             <div class="form-group mb-3">
-                <label for="email">Your Email</label>
-                <input type="email" class="form-control" id="email" name="email" required>
+                <label for="toFacultyId">Select Faculty</label>
+                <select name="toFacultyId" class="form-select" required>
+                    <option value="">-- Select Faculty --</option>
+                    <% for (Faculty f : facultyList) { %>
+                        <option value="<%= f.getId() %>">
+                            <%= f.getName() %> - <%= f.getDesignation() %>
+                        </option>
+                    <% } %>
+                </select>
             </div>
 
             <div class="form-group mb-3">

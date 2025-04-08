@@ -15,20 +15,29 @@
     <h2 class="text-center mb-4">User Login</h2>
     <div class="row justify-content-center">
         <div class="col-md-5 shadow p-4 rounded bg-light">
-            <% String error = request.getParameter("error");
-               if ("1".equals(error)) { %>
-               <div class="alert alert-danger text-center">Invalid Email or Password!</div>
-            <% } else if ("registered".equals(request.getParameter("msg"))) { %>
-               <div class="alert alert-success text-center">Registered successfully! Please login.</div>
-            <% } %>
+            <%
+                String error = request.getParameter("error");
+                String msg = request.getParameter("msg");
+
+                if ("1".equals(error)) {
+            %>
+                <div class="alert alert-danger text-center">Invalid Email or Password!</div>
+            <%
+                } else if ("registered".equals(msg)) {
+            %>
+                <div class="alert alert-success text-center">Registered successfully! Please login.</div>
+            <%
+                }
+            %>
+
             <form action="<%= request.getContextPath() %>/LoginServlet" method="post">
                 <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
-                    <input type="email" name="email" required class="form-control" />
+                    <input type="email" name="email" id="email" required class="form-control" />
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
-                    <input type="password" name="password" required class="form-control" />
+                    <input type="password" name="password" id="password" required class="form-control" />
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Login</button>
                 <div class="text-center mt-3">
