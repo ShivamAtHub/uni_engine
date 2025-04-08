@@ -13,18 +13,18 @@
 <div class="container mt-5">
     <h2 class="text-center mb-4">🔍 Search for a University</h2>
 
-    <form action="../../SearchServlet" method="post" class="row g-3 shadow p-4 rounded bg-light">
+    <form action="<%= request.getContextPath() %>/SearchServlet" method="post" class="row g-3 shadow p-4 rounded bg-light">
         <div class="col-md-4">
             <label class="form-label">University Name</label>
-            <input type="text" name="name" class="form-control" placeholder="e.g. Pune University">
+            <input type="text" name="name" class="form-control" placeholder="e.g. Savitribai Phule Pune University">
         </div>
         <div class="col-md-4">
             <label class="form-label">State</label>
             <input type="text" name="state" class="form-control" placeholder="e.g. Maharashtra">
         </div>
         <div class="col-md-4">
-            <label class="form-label">Course</label>
-            <input type="text" name="course" class="form-control" placeholder="e.g. B.Tech">
+            <label class="form-label">Course Name</label>
+            <input type="text" name="course" class="form-control" placeholder="e.g. MCA, B.Tech, MBA">
         </div>
         <div class="col-12 text-center mt-3">
             <button type="submit" class="btn btn-primary px-4">Search</button>

@@ -1,54 +1,64 @@
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-
-import jakarta.servlet.ServletException;
+import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.http.*;
+import java.io.IOException;
+import java.sql.*;
 
-@WebServlet("/sendMessage")
+@WebServlet("/MessageServlet")
 public class MessageServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String name = request.getParameter("name");
-        String email = request.getParameter("email");
+        // Retrieve message details
+        String toFacultyIdStr = request.getParameter("facultyId");
         String subject = request.getParameter("subject");
         String message = request.getParameter("message");
 
+        // Get user session
+        HttpSession session = request.getSession(false);
+        Integer fromUserId = (session != null) ? (Integer) session.getAttribute("userId") : null;
+
+        // Safety check
+        if (fromUserId == null || toFacultyIdStr == null || toFacultyIdStr.trim().isEmpty()) {
+            response.sendRedirect("user/messageForm.jsp?error=Missing+data");
+            return;
+        }
+
+        int toFacultyId = Integer.parseInt(toFacultyIdStr);
+
         Connection conn = null;
-        PreparedStatement ps = null;
+        PreparedStatement stmt = null;
 
         try {
             conn = DBConnection.getConnection();
 
-            String sql = "INSERT INTO messages (name, email, subject, message) VALUES (?, ?, ?, ?)";
-            ps = conn.prepareStatement(sql);
-            ps.setString(1, name);
-            ps.setString(2, email);
-            ps.setString(3, subject);
-            ps.setString(4, message);
+            String sql = "INSERT INTO messages (from_user_id, to_faculty_id, subject, message) VALUES (?, ?, ?, ?)";
+            stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, fromUserId);
+            stmt.setInt(2, toFacultyId);
+            stmt.setString(3, subject);
+            stmt.setString(4, message);
 
-            int rows = ps.executeUpdate();
+            int rowsInserted = stmt.executeUpdate();
 
-            if (rows > 0) {
-                request.setAttribute("msg", "✅ Message sent successfully!");
+            if (rowsInserted > 0) {
+                response.sendRedirect("user/home.jsp?msg=Message+sent+successfully");
             } else {
-                request.setAttribute("msg", "❌ Failed to send message. Try again.");
+                request.setAttribute("error", "Failed to send message.");
+                request.getRequestDispatcher("user/messageForm.jsp").forward(request, response);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("msg", "❌ Error occurred while sending message.");
+            request.setAttribute("error", "Error while sending message.");
+            request.getRequestDispatcher("user/messageForm.jsp").forward(request, response);
         } finally {
-            try { if (ps != null) ps.close(); } catch (Exception ignored) {}
-            try { if (conn != null) conn.close(); } catch (Exception ignored) {}
+            try {
+                if (stmt != null) stmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-
-        RequestDispatcher rd = request.getRequestDispatcher("user/messageForm.jsp");
-        rd.forward(request, response);
     }
 }
